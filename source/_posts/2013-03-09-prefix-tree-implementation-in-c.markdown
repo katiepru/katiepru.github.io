@@ -59,3 +59,67 @@ typedef struct TrieNode
 	bool is_word;
 } TrieNode;
 ```
+
+Properly Creating and Destroying TrieNodes
+------------------------------------------
+
+Before we can begin building the prefix tree, first we must be able to correctly
+create and destroy TrieNodes without any memory leaks. First, we will deal with 
+creating TrieNodes. Below is a function to do so:
+
+```c
+struct TrieNode *create_trienode(char c, struct TrieNode *parent)
+{
+	struct TrieNode *node = malloc(sizeof(struct TrieNode));
+	node->c = c;
+	node->parent = parent;
+	node->children = malloc(26*sizeof(struct TrieNode));
+	node->is_word=false;
+	return node;
+}
+```
+
+This function returns a pointer to a TrieNode struct and takes in a character 
+and a pointer to the parent node as arguments. It then allocates memory for the
+new struct, which we assign to the variable `node`. It then sets the values of 
+`char c` and `struct TrieNode *parent` according the the arguments. It then
+allocates memory for the children array, assuming there are 26 letters in the 
+alphabet. The size of this array can be changed to suit any alphabet. Lastly, we
+assume that the node is not a word when it is created, so we set `is_word` to 
+false, although this can be changed later in the program if need. We return the
+pointer to the node that we allocated memory formed stored in the variable 
+`node`.
+
+Now that we can properly create a node, it is also important that we can destroy
+it as well without and memory leaks. Below is a function to do that:
+
+```c
+void destroy_trienode(struct TrieNode *node)
+{
+	int i;
+
+	if(node==NULL) 
+	{
+		return;
+	}
+
+	for(i=0; i<26; i++)
+	{
+		destroy_trienode(node->children[i]);
+	}
+
+	free(node->children);
+	free(node);
+	return;
+}
+```
+
+There are a few important things happening in this function. First, we can see 
+that the function is of type void and takes in a pointer to a TrieNode struct as
+an argument. This is because C is a pass-by-value language, so passing in the
+actual struct would not affect the struct outside of this function. The first 
+thing we need to do in this function is check if the pointer is NULL, as we 
+cannot destroy NULL. If it is null, we simply return as there is nothing else to
+do. Next, wen need to recursively destroy all of the node's children before we 
+can destroy the node as there will be no way to access them once the current 
+node is gone.  Lastly, we free the children array and then the node itself.
