@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Kaitlin Poskaitis</title>
+  <title>Prefix Tree Implementation in C - Kaitlin Poskaitis</title>
   <meta name="author" content="Kaitlin Poskaitis">
 
   
@@ -19,7 +19,7 @@ storing and sorting large lists of words in an &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://katiepru.github.com/katiepru/">
+  <link rel="canonical" href="http://katiepru.github.com/katiepru/blog/2013/03/09/prefix-tree-implementation-in-c/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -64,15 +64,12 @@ storing and sorting large lists of words in an &hellip;">
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/03/09/prefix-tree-implementation-in-c/">Prefix Tree Implementation in C</a></h1>
+      <h1 class="entry-title">Prefix Tree Implementation in C</h1>
     
     
       <p class="meta">
@@ -90,14 +87,14 @@ storing and sorting large lists of words in an &hellip;">
 
 <time datetime="2013-03-09T20:45:00-08:00" pubdate data-updated="true">Mar 9<span>th</span>, 2013</time>
         
-         | <a href="/blog/2013/03/09/prefix-tree-implementation-in-c/#disqus_thread">Comments</a>
+         | <a href="#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><h2>Basic Concept</h2>
+<div class="entry-content"><h2>Basic Concept</h2>
 
 <p>A prefix tree (sometimes called a Trie), is a data structure typically used for
 storing and sorting large lists of words in an efficient manner. A prefix tree
@@ -445,22 +442,16 @@ from a file:</p>
 <p>This covers how to build a prefix tree from a file. Next, we will cover
 applications for this data structure.</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/11/13/first-post/">First Post</a></h1>
-    
-    
-      <p class="meta">
-        
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Kaitlin Poskaitis</span></span>
+
+      
 
 
 
@@ -472,29 +463,44 @@ applications for this data structure.</p>
   
 
 
-<time datetime="2012-11-13T01:31:00-08:00" pubdate data-updated="true">Nov 13<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/11/13/first-post/#disqus_thread">Comments</a>
-        
-      </p>
+<time datetime="2013-03-09T20:45:00-08:00" pubdate data-updated="true">Mar 9<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-/'>C,</a>, <a class='category' href='/blog/categories/prefix-tree/'>prefix-tree</a>
+  
+</span>
+
+
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><p>Also, my first blog. This blog will have some solutions to useful problems in computer science and programming. Any suggestions? Please leave comments.</p>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://katiepru.github.com/katiepru/blog/2013/03/09/prefix-tree-implementation-in-c/" data-via="" data-counturl="http://katiepru.github.com/katiepru/blog/2013/03/09/prefix-tree-implementation-in-c/" >Tweet</a>
+  
+  
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/11/13/first-post/" title="Previous Post: First Post">&laquo; First Post</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
+  </section>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -515,7 +521,7 @@ applications for this data structure.</p>
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/katiepru">@katiepru</a> on GitHub
@@ -549,6 +555,7 @@ applications for this data structure.</p>
   
 </aside>
 
+
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -563,7 +570,10 @@ applications for this data structure.</p>
       var disqus_shortname = 'poskaitisblog';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://katiepru.github.com/katiepru/blog/2013/03/09/prefix-tree-implementation-in-c/';
+        var disqus_url = 'http://katiepru.github.com/katiepru/blog/2013/03/09/prefix-tree-implementation-in-c/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

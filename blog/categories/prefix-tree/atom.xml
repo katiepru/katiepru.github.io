@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: prefix-tree | Kaitlin Poskaitis]]></title>
+  <link href="http://katiepru.github.com/katiepru/blog/categories/prefix-tree/atom.xml" rel="self"/>
+  <link href="http://katiepru.github.com/katiepru/"/>
+  <updated>2014-06-01T11:53:30-07:00</updated>
+  <id>http://katiepru.github.com/katiepru/</id>
+  <author>
+    <name><![CDATA[Kaitlin Poskaitis]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Prefix Tree Implementation in C]]></title>
+    <link href="http://katiepru.github.com/katiepru/blog/2013/03/09/prefix-tree-implementation-in-c/"/>
+    <updated>2013-03-09T20:45:00-08:00</updated>
+    <id>http://katiepru.github.com/katiepru/blog/2013/03/09/prefix-tree-implementation-in-c</id>
+    <content type="html"><![CDATA[<h2>Basic Concept</h2>
+
+<p>A prefix tree (sometimes called a Trie), is a data structure typically used for
+storing and sorting large lists of words in an efficient manner. A prefix tree
+is very similar to a standard binary tree, only with each node having 26
+children instead of just 2. A prefix tree starts with a root node, which does
+not contain data relevant to any word, but rather acts as a starting point. If
+we are using the standard English alphabet, this root node will have pointers to
+26 children, one for each letter of the alphabet. Each of these nodes will also
+have 26 children, and so on.</p>
+
+<h2>Node Contents w/ Code</h2>
+
+<p>Most implementations of prefix trees share a basic Node structure used for
+storing the data:</p>
+
+<ul>
+<li><p><strong>Character</strong>: each node, with the exception of the root node, represents a
+letter in the alphabet. The root node can be any character that is not in the
+alphabet. I personally use a space as the root character, as it is most often
+used as a word delimeter.</p></li>
+<li><p><strong>Boolean is_word</strong>: A boolean is needed to tell whether or not a full word
+was formed and ended at the current node. Because it is a tree, each node has a
+unique path to it from the root node. Simply traversing through the tree and
+checking whether these booleans are true is an easy way to obtain all of the
+words that were stored in the tree. Also, the value of the boolean does not
+affect whether or not the node can have children.</p></li>
+<li><p><strong>Pointer Array</strong>: We also need a data structure to hold all of the pointers
+to the node's children. Since we are typically working with a finite, relatively
+small alphabet, an array will work just fine. Each index in the array can
+represent a letter (i.e. a = 0, b = 1, etc), and the array at each index will
+hold a pointer to a child node.</p></li>
+<li><p><strong>Pointer to Parent</strong>: A pointer to the parent node is useful for backtracking
+up the tree in order to determine the current word given a node.</p></li>
+</ul>
+
+
+<p>Below is the C code for defining the struct (called a TrieNode):</p>
+
+<p>```c</p>
+
+<p>typedef enum {false, true} bool;</p>
+
+<p>typedef struct TrieNode
+{</p>
+
+<pre><code>char c;
+struct TrieNode *parent;
+struct TrieNode **children;
+bool is_word;
+</code></pre>
+
+<p>} TrieNode;
+```</p>
+
+<h2>Properly Creating and Destroying TrieNodes</h2>
+
+<p>Before we can begin building the prefix tree, first we must be able to correctly
+create and destroy TrieNodes without any memory leaks. First, we will deal with
+creating TrieNodes. Below is a function to do so:</p>
+
+<p>```c
+struct TrieNode <em>create_trienode(char c, struct TrieNode </em>parent)
+{</p>
+
+<pre><code>struct TrieNode *node = malloc(sizeof(struct TrieNode));
+node-&gt;c = c;
+node-&gt;parent = parent;
+node-&gt;children = malloc(26*sizeof(struct TrieNode));
+node-&gt;is_word=false;
+return node;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>This function returns a pointer to a TrieNode struct and takes in a character
+and a pointer to the parent node as arguments. It then allocates memory for the
+new struct, which we assign to the variable <code>node</code>. It then sets the values of
+<code>char c</code> and <code>struct TrieNode *parent</code> according the the arguments. It then
+allocates memory for the children array, assuming there are 26 letters in the
+alphabet. The size of this array can be changed to suit any alphabet. Lastly, we
+assume that the node is not a word when it is created, so we set <code>is_word</code> to
+false, although this can be changed later in the program if need. We return the
+pointer to the node that we allocated memory formed stored in the variable
+<code>node</code>.</p>
+
+<p>Now that we can properly create a node, it is also important that we can destroy
+it as well without and memory leaks. Below is a function to do that:</p>
+
+<p>```c
+void destroy_trienode(struct TrieNode *node)
+{</p>
+
+<pre><code>int i;
+
+if(node==NULL) 
+{
+    return;
+}
+
+for(i=0; i&lt;26; i++)
+{
+    destroy_trienode(node-&gt;children[i]);
+}
+
+free(node-&gt;children);
+free(node);
+return;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>There are a few important things happening in this function. First, we can see
+that the function is of type void and takes in a pointer to a TrieNode struct as
+an argument. This is because C is a pass-by-value language, so passing in the
+actual struct would not affect the struct outside of this function. The first
+thing we need to do in this function is check if the pointer is NULL, as we
+cannot destroy NULL. If it is null, we simply return as there is nothing else to
+do. Next, wen need to recursively destroy all of the node's children before we
+can destroy the node as there will be no way to access them once the current
+node is gone.  Lastly, we free the children array and then the node itself.</p>
+
+<h2>Building the Prefix Tree</h2>
+
+<p>Now that we are able to create and destroy TrieNode structs, we can begin to
+actually build the tree. The function we will use will read in a file and build
+a prefix tree from the contents of that file. This function will assume that
+words consist of at least one letter, that words are case-insensitive, and that
+words are delimited by any non-letter character. These assumptions can be
+changed if needed.</p>
+
+<p>First, we will assume that the function return a pointer to the root node of
+the tree and takes in a valid, non-NULL file pointer as an argument. Therefore,
+the function definition would look like this:</p>
+
+<p><code>c
+struct TrieNode *create_tree(FILE *file)
+</code></p>
+
+<p>Next, let's initialize all of our variables to stay pedantic-compiant.</p>
+
+<p><code>c
+struct TrieNode *root = create_trienode(' ', NULL);
+struct TrieNode *ptr = root;
+int character;
+int converted;
+int buffer;
+</code></p>
+
+<p>The variable <code>root</code> will be what we return at the end of the function, as it is
+the new root of the prefix tree. Next, <code>ptr</code> will be used to traverse the
+tree as needed. <code>character</code> will be the current character we are at
+in the file. <code>converted</code> will be used to convert <code>character</code> into
+an int between 0 and 26. Lastly, <code>buffer</code> will be the
+next character in the file, and is only needed in cases where the file does not
+end in a newline character to delimit the last word, as shown below:</p>
+
+<p><code>c
+character = fgetc(file);
+buffer = fgetc(file);
+</code></p>
+
+<p>Now, we can begin a loop through the file. The first thing to do is to convert
+<code>character</code> to its lower-case form, as this is case-insensitive.</p>
+
+<p>```c
+while(character != EOF)
+{</p>
+
+<pre><code>character = tolower(character);
+</code></pre>
+
+<p>```</p>
+
+<p>Next, if the character is a letter, we need to create a node for it and insert
+into the tree (if it doesn;t already exist). We do this by populating
+<code>converted</code> with the number of the current letter in the alphabet (starting with
+0). We then check if the current node we are on already has a child node in the
+<code>converted</code> position of the array. If not, we create one. We then advance <code>ptr</code>
+to <code>ptr-&gt;children[converted]</code>, as shown below:</p>
+
+<p>```c
+if(isalpha(character))
+{</p>
+
+<pre><code>converted = character - 97;
+if(ptr-&gt;children[converted] == NULL)
+{
+    ptr-&gt;children[converted] = create_trienode(character, ptr);
+}
+ptr = ptr-&gt;children[converted];
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Next, we need to check if the current word is complete. This can happen if
+<code>character</code> is not a letter or if <code>buffer</code> is EOF. If this is the case, and we
+are not on the root node, then we need to mark the current node as a word and
+set <code>ptr</code> to the root so we can start again, as shown below:</p>
+
+<p>```c
+if(ptr != root &amp;&amp; (!isalpha(character) || buffer -- EOF))
+{</p>
+
+<pre><code>pte-&gt;is_word = true;
+ptr = root;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Lastly, we need to advance <code>character</code> and <code>buffer</code>:</p>
+
+<p><code>c
+character = buffer;
+buffer = fgetc(file);
+</code></p>
+
+<p>Putting it all together, we have a finalized function to create a prefix tree
+from a file:</p>
+
+<p>```c
+struct TrieNode <em>create_tree(FILE </em>file)
+{</p>
+
+<pre><code>struct TrieNode *root = create_trienode(' ', NULL);
+struct TrieNode *ptr = root;
+int character;
+int converted;
+int buffer;
+
+/*This handles if file does not end with a newline*/
+character = fgetc(file);
+buffer = fgetc(file);
+
+while(character != EOF)
+{
+    character = tolower(character);
+
+    if(isalpha(character))
+    {
+        converted = character - 97;
+        if(ptr-&gt;children[converted] == NULL)
+        {
+            ptr-&gt;children[converted] = create_trienode(character, ptr);
+        }
+        ptr = ptr-&gt;children[converted];
+    }
+    if(ptr != root &amp;&amp; (!isalpha(character) || buffer == EOF))
+    {
+        ptr-&gt;is_word = true;
+        ptr = root;
+    }
+
+    character = buffer;
+    buffer = fgetc(file);
+}
+
+return root;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>This covers how to build a prefix tree from a file. Next, we will cover
+applications for this data structure.</p>
+]]></content>
+  </entry>
+  
+</feed>
