@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: prefix-tree | Kaitlin Poskaitis]]></title>
-  <link href="http://katiepru.github.com/katiepru/blog/categories/prefix-tree/atom.xml" rel="self"/>
-  <link href="http://katiepru.github.com/katiepru/"/>
-  <updated>2014-06-01T11:57:22-07:00</updated>
-  <id>http://katiepru.github.com/katiepru/</id>
+  <link href="http://kposkaitis.net/blog/categories/prefix-tree/atom.xml" rel="self"/>
+  <link href="http://kposkaitis.net/"/>
+  <updated>2014-09-05T22:36:43-04:00</updated>
+  <id>http://kposkaitis.net/</id>
   <author>
     <name><![CDATA[Kaitlin Poskaitis]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Prefix Tree Implementation in C]]></title>
-    <link href="http://katiepru.github.com/katiepru/blog/2013/03/09/prefix-tree-implementation-in-c/"/>
-    <updated>2013-03-09T20:45:00-08:00</updated>
-    <id>http://katiepru.github.com/katiepru/blog/2013/03/09/prefix-tree-implementation-in-c</id>
+    <link href="http://kposkaitis.net/blog/2013/03/09/prefix-tree-implementation-in-c/"/>
+    <updated>2013-03-09T20:45:00-05:00</updated>
+    <id>http://kposkaitis.net/blog/2013/03/09/prefix-tree-implementation-in-c</id>
     <content type="html"><![CDATA[<h2>Basic Concept</h2>
 
 <p>A prefix tree (sometimes called a Trie), is a data structure typically used for
